@@ -44,6 +44,7 @@ export class TaskService {
   }
 
   getTaskTypes(): Observable<string[]> {
+    console.log('Fetching task types from:', `${this.apiUrl}/task-types`);
     return this.http.get<string[]>(`${this.apiUrl}/task-types`);
   }
 

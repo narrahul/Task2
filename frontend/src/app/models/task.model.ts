@@ -16,6 +16,6 @@ export interface TaskFilters {
   contact_person?: string;
   task_date?: string;     
   sort_by?: string;
-  sort_order?: 'asc' | 'desc';
+  sort_order?: 'asc' | 'desc' | '';
 }
 
