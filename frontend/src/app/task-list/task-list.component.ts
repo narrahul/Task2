@@ -10,7 +10,6 @@ import { Task, TaskFilters } from '../models/task.model';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="card">
-      <!-- Card Header (Sales Log title, New Task button, Search Bar) -->
       <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h2 class="card-title">SALES LOG</h2>
         <div style="display: flex; align-items: center; gap: 1rem;">
@@ -19,7 +18,6 @@ import { Task, TaskFilters } from '../models/task.model';
         </div>
       </div>
 
-      <!-- Active Filters Display (e.g., Task Type: Call) -->
       <div class="active-filters">
         <span *ngIf="filters.entity_name" class="active-filter-badge">Entity Name: {{ filters.entity_name }} <span class="clear-filter" (click)="clearFilters('entity_name')">x</span></span>
         <span *ngIf="filters.task_type" class="active-filter-badge">Task Type: {{ filters.task_type }} <span class="clear-filter" (click)="clearFilters('task_type')">x</span></span>
@@ -28,7 +26,6 @@ import { Task, TaskFilters } from '../models/task.model';
         <span *ngIf="filters.task_date" class="active-filter-badge">Task Date: {{ formatDate(filters.task_date) }} <span class="clear-filter" (click)="clearFilters('task_date')">x</span></span>
       </div>
 
-      <!-- Original Filters Section (hidden for now, will be replaced by integrated filtering) -->
       <div class="filters">
         <div class="form-group">
           <label class="form-label">Entity Name</label>
@@ -87,19 +84,15 @@ import { Task, TaskFilters } from '../models/task.model';
         </div>
       </div>
 
-      <!-- Actions (Moved into card-header or will be part of table actions) -->
       <div class="actions" style="display: none;">
       </div>
 
-      <!-- Alerts -->
       <div *ngIf="alert" class="alert" [ngClass]="alert.type === 'success' ? 'alert-success' : 'alert-error'">
         {{ alert.message }}
       </div>
 
-      <!-- Loading -->
       <div *ngIf="loading" class="loading">Loading tasks...</div>
 
-      <!-- Task Table -->
       <table *ngIf="!loading && tasks.length > 0" class="table">
         <thead>
           <tr>
@@ -114,7 +107,6 @@ import { Task, TaskFilters } from '../models/task.model';
           </tr>
         </thead>
         <tbody>
-          <!-- We will need to implement date grouping here later -->
           <tr *ngFor="let task of tasks">
             <td>{{ formatDate(task.date_created) }}</td>
             <td>{{ task.entity_name }}</td>
@@ -141,13 +133,11 @@ import { Task, TaskFilters } from '../models/task.model';
         </tbody>
       </table>
 
-      <!-- No Tasks Message -->
       <div *ngIf="!loading && tasks.length === 0" class="loading">
         No tasks found. Create a new task to get started.
       </div>
     </div>
 
-    <!-- Create/Edit Task Modal -->
     <div *ngIf="showModal" class="modal" (click)="closeModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
@@ -189,7 +179,6 @@ import { Task, TaskFilters } from '../models/task.model';
             </datalist>
           </div>
 
-          <!-- Removed Phone number field as per JD -->
           
           <div class="form-group">
             <label class="form-label">Contact person</label>
@@ -231,14 +220,13 @@ export class TaskListComponent implements OnInit {
   taskForm: any = {
     entity_name: '',
     task_type: '',
-    task_date: '', // Separate date field
-    task_time_hour: '12', // Separate hour field for time picker
-    task_time_minute: '00', // Separate minute field for time picker
-    task_time_ampm: 'PM', // Separate AM/PM field for time picker
+    task_date: '',
+    task_time_hour: '12',
+    task_time_minute: '00',
+    task_time_ampm: 'PM',
     contact_person: '',
     note: '',
     status: 'open'
-    // Removed phone_number from taskForm
   };
 
   hours: string[] = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
@@ -291,14 +279,13 @@ export class TaskListComponent implements OnInit {
     this.taskForm = {
       entity_name: '',
       task_type: '',
-      task_date: '', // Reset to empty
+      task_date: '',
       task_time_hour: '12',
       task_time_minute: '00',
       task_time_ampm: 'PM',
       contact_person: '',
       note: '',
       status: 'open'
-      // Removed phone_number
     };
     this.showModal = true;
   }
@@ -309,20 +296,19 @@ export class TaskListComponent implements OnInit {
     this.taskForm = {
       entity_name: task.entity_name,
       task_type: task.task_type,
-      task_date: taskDateTime.toISOString().slice(0, 10), // Extract date
-      task_time_hour: this.formatHourForInput(taskDateTime), // Extract hour
-      task_time_minute: this.formatMinuteForInput(taskDateTime), // Extract minute
-      task_time_ampm: this.formatAmPmForInput(taskDateTime), // Extract AM/PM
+      task_date: taskDateTime.toISOString().slice(0, 10),
+      task_time_hour: this.formatHourForInput(taskDateTime),
+      task_time_minute: this.formatMinuteForInput(taskDateTime),
+      task_time_ampm: this.formatAmPmForInput(taskDateTime),
       contact_person: task.contact_person,
       note: task.note || '',
       status: task.status
-      // Removed phone_number from task population
     };
     this.showModal = true;
   }
 
   duplicateTask(task: Task) {
-    this.editingTask = null; // Treat as a new task for duplication
+    this.editingTask = null;
     const taskDateTime = new Date(task.task_time);
     this.taskForm = {
       entity_name: task.entity_name,
@@ -333,21 +319,18 @@ export class TaskListComponent implements OnInit {
       task_time_ampm: this.formatAmPmForInput(taskDateTime),
       contact_person: task.contact_person,
       note: task.note || '',
-      status: 'open' // Default to open for duplicated tasks
-      // Removed phone_number
+      status: 'open'
     };
     this.showModal = true;
   }
 
   saveTask() {
-    // Client-side validation
     if (!this.taskForm.entity_name?.trim()) { this.showAlert('error', 'Entity name is required'); return; }
     if (!this.taskForm.task_type?.trim()) { this.showAlert('error', 'Task type is required'); return; }
     if (!this.taskForm.task_date) { this.showAlert('error', 'Date is required'); return; }
     if (!this.taskForm.task_time_hour || !this.taskForm.task_time_minute || !this.taskForm.task_time_ampm) { this.showAlert('error', 'Time is required'); return; }
     if (!this.taskForm.contact_person?.trim()) { this.showAlert('error', 'Contact person is required'); return; }
 
-    // Construct full task_time from separate date and time components
     let hour = parseInt(this.taskForm.task_time_hour, 10);
     if (this.taskForm.task_time_ampm === 'PM' && hour !== 12) {
       hour += 12;
@@ -356,7 +339,6 @@ export class TaskListComponent implements OnInit {
     }
     const fullTaskTime = new Date(`${this.taskForm.task_date}T${hour.toString().padStart(2, '0')}:${this.taskForm.task_time_minute}:00`);
 
-    // Past date validation
     const now = new Date();
     if (fullTaskTime < now) {
       this.showAlert('error', 'Task due time cannot be in the past');
@@ -370,7 +352,6 @@ export class TaskListComponent implements OnInit {
       contact_person: this.taskForm.contact_person.trim(),
       note: this.taskForm.note?.trim() || '',
       status: this.taskForm.status
-      // Removed phone_number from taskToSend
     };
 
     if (this.editingTask) {
