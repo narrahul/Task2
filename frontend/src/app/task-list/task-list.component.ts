@@ -21,9 +21,11 @@ import { Task, TaskFilters } from '../models/task.model';
 
       <!-- Active Filters Display (e.g., Task Type: Call) -->
       <div class="active-filters">
-        <!-- This area will dynamically display active filters, like "Task Type: Call" -->
+        <span *ngIf="filters.entity_name" class="active-filter-badge">Entity Name: {{ filters.entity_name }} <span class="clear-filter" (click)="clearFilters('entity_name')">x</span></span>
         <span *ngIf="filters.task_type" class="active-filter-badge">Task Type: {{ filters.task_type }} <span class="clear-filter" (click)="clearFilters('task_type')">x</span></span>
-        <!-- Add similar badges for other active filters -->
+        <span *ngIf="filters.status" class="active-filter-badge">Status: {{ filters.status }} <span class="clear-filter" (click)="clearFilters('status')">x</span></span>
+        <span *ngIf="filters.contact_person" class="active-filter-badge">Contact Person: {{ filters.contact_person }} <span class="clear-filter" (click)="clearFilters('contact_person')">x</span></span>
+        <span *ngIf="filters.task_date" class="active-filter-badge">Task Date: {{ formatDate(filters.task_date) }} <span class="clear-filter" (click)="clearFilters('task_date')">x</span></span>
       </div>
 
       <!-- Original Filters Section (hidden for now, will be replaced by integrated filtering) -->
