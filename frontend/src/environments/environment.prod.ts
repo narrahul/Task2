@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://task2-zpb5.onrender.com:10000/api'
+    apiUrl: 'https://task2-zpb5.onrender.com/api'
   };

@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { TaskListComponent } from './task-list/task-list.component';\nexport const routes = [{\n  path: '',\n  redirectTo: '/tasks',\n  pathMatch: 'full'\n}, {\n  path: 'tasks',\n  component: TaskListComponent\n}];","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}
