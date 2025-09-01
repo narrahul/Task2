@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const environment = {\n  production: true,\n  apiUrl: 'https://task2-zpb5.onrender.com/api'\n};","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}
