@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import os
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": os.environ.get('FRONTEND_URL', 'http://localhost:4200')}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -38,7 +39,6 @@ with app.app_context():
 
 
 @app.route('/api/tasks', methods=['GET'])
-@cross_origin(origin="http://localhost:4200")
 def get_tasks():
     entity_name = request.args.get('entity_name')
     task_type = request.args.get('task_type')
@@ -88,7 +88,6 @@ def get_tasks():
     return jsonify([task.to_dict() for task in tasks])
 
 @app.route('/api/tasks', methods=['POST'])
-@cross_origin(origin="http://localhost:4200")
 def create_task():
     data = request.json
 
@@ -122,7 +121,6 @@ def create_task():
     return jsonify(task.to_dict()), 201
 
 @app.route('/api/tasks/<int:task_id>', methods=['PUT'])
-@cross_origin(origin="http://localhost:4200")
 def update_task(task_id):
     task = Task.query.get_or_404(task_id)
     data = request.json
@@ -153,7 +151,6 @@ def update_task(task_id):
     return jsonify(task.to_dict())
 
 @app.route('/api/tasks/<int:task_id>/status', methods=['PATCH'])
-@cross_origin(origin="http://localhost:4200")
 def update_task_status(task_id):
     task = Task.query.get_or_404(task_id)
     data = request.json
@@ -168,7 +165,6 @@ def update_task_status(task_id):
     return jsonify(task.to_dict())
 
 @app.route('/api/tasks/<int:task_id>', methods=['DELETE'])
-@cross_origin(origin="http://localhost:4200")
 def delete_task(task_id):
     task = Task.query.get_or_404(task_id)
     db.session.delete(task)
@@ -176,13 +172,11 @@ def delete_task(task_id):
     return jsonify({'message': 'Task deleted successfully'})
 
 @app.route('/api/task-types', methods=['GET'])
-@cross_origin(origin="http://localhost:4200")
 def get_task_types():
     task_types = db.session.query(Task.task_type).distinct().all()
     return jsonify([task_type[0] for task_type in task_types])
 
 @app.route('/api/contact-persons', methods=['GET'])
-@cross_origin(origin="http://localhost:4200")
 def get_contact_persons():
     contact_persons = db.session.query(Task.contact_person).distinct().all()
     return jsonify([person[0] for person in contact_persons])
