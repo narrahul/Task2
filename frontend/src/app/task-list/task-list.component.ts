@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common'; // Added DatePipe
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../services/task.service';
 import { Task, TaskFilters } from '../models/task.model';
@@ -8,6 +8,7 @@ import { Task, TaskFilters } from '../models/task.model';
   selector: 'app-task-list',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  providers: [DatePipe], // Added DatePipe to providers
   template: `
     <div class="card">
       <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -23,7 +24,7 @@ import { Task, TaskFilters } from '../models/task.model';
         <span *ngIf="filters.task_type" class="active-filter-badge">Task Type: {{ filters.task_type }} <span class="clear-filter" (click)="clearFilters('task_type')">x</span></span>
         <span *ngIf="filters.status" class="active-filter-badge">Status: {{ filters.status }} <span class="clear-filter" (click)="clearFilters('status')">x</span></span>
         <span *ngIf="filters.contact_person" class="active-filter-badge">Contact Person: {{ filters.contact_person }} <span class="clear-filter" (click)="clearFilters('contact_person')">x</span></span>
-        <span *ngIf="filters.task_date" class="active-filter-badge">Task Date: {{ formatDate(filters.task_date) }} <span class="clear-filter" (click)="clearFilters('task_date')">x</span></span>
+        <span *ngIf="filters.task_date" class="active-filter-badge">Task Date: {{ filters.task_date | date:'dd MMM yyyy':'UTC':'en-IN' }} <span class="clear-filter" (click)="clearFilters('task_date')">x</span></span>
       </div>
 
       <div class="filters">
@@ -108,13 +109,13 @@ import { Task, TaskFilters } from '../models/task.model';
         </thead>
         <tbody>
           <tr *ngFor="let task of tasks">
-            <td>{{ formatDate(task.date_created) }}</td>
+            <td>{{ task.date_created | date:'dd MMM yyyy, h:mm:ss a':'+0530':'en-IN' }}</td>
             <td>{{ task.entity_name }}</td>
             <td>
               <span class="task-type-icon" [ngClass]="'task-type-' + task.task_type.toLowerCase()"></span>
               {{ task.task_type }}
             </td>
-            <td>{{ formatFullDateTime(task.task_time) }}</td>
+            <td>{{ task.task_time | date:'dd MMM yyyy, h:mm:ss a':'+0530':'en-IN' }}</td>
             <td>{{ task.contact_person }}</td>
             <td>{{ task.note || '-' }}</td>
             <td>
@@ -234,7 +235,7 @@ export class TaskListComponent implements OnInit {
   
   alert: { type: 'success' | 'error', message: string } | null = null;
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private datePipe: DatePipe) {} // Injected DatePipe
 
   ngOnInit() {
     this.loadTasks();
@@ -431,20 +432,21 @@ export class TaskListComponent implements OnInit {
     setTimeout(() => this.alert = null, 5000);
   }
 
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-  }
+  // Removed custom date formatting methods as DatePipe is used in template now.
+  // formatDate(dateString: string): string {
+  //   return new Date(dateString).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  // }
 
-  formatTime(dateString: string): string {
-    return new Date(dateString).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-  }
+  // formatTime(dateString: string): string {
+  //   return new Date(dateString).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  // }
 
-  formatFullDateTime(dateString: string): string {
-    const date = new Date(dateString);
-    const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-    return `${formattedDate} ${formattedTime}`;
-  }
+  // formatFullDateTime(dateString: string): string {
+  //   const date = new Date(dateString);
+  //   const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  //   const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  //   return `${formattedDate} ${formattedTime}`;
+  // }
 
   private formatHourForInput(date: Date): string {
     let hour = date.getHours();
